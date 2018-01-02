@@ -1,7 +1,7 @@
 {
   "name": "hydux-transitions",
-  "version": "0.1.7",
-  "description": "An statically-typed immutable update helper library, built for hydux.",
+  "version": "0.0.0",
+  "description": "A transition library followed The Elm Architecture, for Hydux.",
   "main": "./lib/index.js",
   "typings": "./lib/index",
   "types": "./lib/index",

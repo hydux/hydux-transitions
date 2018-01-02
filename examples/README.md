@@ -1,1 +1,1 @@
-# counter-example
+# example
