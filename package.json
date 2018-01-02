@@ -14,8 +14,7 @@
     "preversion": "npm run build && npm run build:dist && git add -A",
     "bench": "NODE_ENV=production node ./lib/benchmark/index.js > ./src/benchmark/bench.txt"
   },
-  "pre-commit": [
-  ],
+  "pre-commit": [],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hydux/hydux-transitions.git"
