@@ -11,11 +11,10 @@
     "test": "mocha --require espower-typescript/guess \"src/test/**/*.ts\" \"lib/test/**/*.js\"",
     "test:watch": "npm run test -- -w --watch-extensions ts,tsx",
     "doc": "typedoc --theme minimal --out ./docs --exclude ./test ./src && touch ./docs/.nojekyll",
-    "preversion": "npm run test && npm run build && npm run build:dist && git add -A",
+    "preversion": "npm run build && npm run build:dist && git add -A",
     "bench": "NODE_ENV=production node ./lib/benchmark/index.js > ./src/benchmark/bench.txt"
   },
   "pre-commit": [
-    "test"
   ],
   "repository": {
     "type": "git",

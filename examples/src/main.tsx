@@ -22,7 +22,43 @@ if (process.env.NODE_ENV === 'development') {
   app = devTools()(app)
   app = hmr()(app)
 }
-
+const slideInitState = {
+  slides: ['red', 'yellow', 'blue'],
+  currents: {
+    prev: 0,
+    next: 1,
+  },
+  index: 0,
+  direction: 'left' as 'left' | 'right',
+  right: {
+    prev: Transitions.init([{
+      translateX: Units.percent(100),
+      duration: Units.ms(600),
+    }]),
+    next: Transitions.init([{
+      translateX: Units.percent(0),
+      duration: Units.ms(600),
+    }], {
+      initFrame: {
+        translateX: Units.percent(-100),
+      }
+    })
+  },
+  left: {
+    prev: Transitions.init([{
+      translateX: Units.percent(-100),
+      duration: Units.ms(600),
+    }]),
+    next: Transitions.init([{
+      translateX: Units.percent(0),
+      duration: Units.ms(600),
+    }], {
+      initFrame: {
+        translateX: Units.percent(100),
+      }
+    })
+  },
+}
 const Slide = {
   actions: {
     left: {
@@ -64,44 +100,46 @@ const Slide = {
       })]
     },
   },
-  init: () => Slide.state,
-  state: {
-    slides: ['red', 'yellow', 'blue'],
-    currents: {
-      prev: 0,
-      next: 1,
-    },
-    index: 0,
-    direction: 'left' as 'left' | 'right',
-    right: {
-      prev: Transitions.init([{
-        translateX: Units.percent(100),
-        duration: Units.ms(2000),
-      }]),
-      next: Transitions.init([{
-        translateX: Units.percent(0),
-        duration: Units.ms(2000),
-      }], {
-        initFrame: {
-          translateX: Units.percent(-100),
-        }
-      })
-    },
-    left: {
-      prev: Transitions.init([{
-        translateX: Units.percent(-100),
-        duration: Units.ms(2000),
-      }]),
-      next: Transitions.init([{
-        translateX: Units.percent(0),
-        duration: Units.ms(2000),
-      }], {
-        initFrame: {
-          translateX: Units.percent(100),
-        }
-      })
-    },
-  }
+  init: () => slideInitState,
+  view: (state: SlideState) => (actions: SlideActions) => (
+    <div>
+      <button onClick={actions.goLeft}>Go Left</button>
+      <button onClick={actions.goRight}>Go Right</button>
+      <p style={{
+        position: 'relative',
+        width: '100px',
+        height: '100px',
+        overflow: 'hidden',
+      }}>
+        <div
+          style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            top: '0px',
+            left: '0px',
+            background: state.slides[state.currents.prev],
+            ...state[state.direction].prev.style,
+          }}
+          onClick={e => console.log('clicked', state.slides[state.currents.prev])}
+          className={state[state.direction].prev.className}
+        />
+        <div
+          style={{
+            width: '100px',
+            height: '100px',
+            position: 'absolute',
+            top: '0px',
+            left: '0px',
+            background: state.slides[state.currents.next],
+            ...state[state.direction].next.style,
+          }}
+          onClick={e => console.log('clicked', state.slides[state.currents.next])}
+          className={state[state.direction].next.className}
+        />
+      </p>
+    </div>
+  )
 }
 
 const actions = {
@@ -133,13 +171,10 @@ const state = {
 type Actions = typeof actions
 type State = typeof state
 type SlideActions = typeof Slide.actions
-type SlideState = typeof Slide.state
+type SlideState = typeof slideInitState
 const pStyle = { margin: '20px' }
 const view = (state: State) => (actions: Actions) =>
     <main>
-      <style>{`
-
-      `}</style>
       <button onClick={actions.timeline.start}>Start</button>
       <button onClick={actions.timeline.reset}>Reset</button>
       <button onClick={actions.timeline.end}>End</button>
@@ -155,41 +190,7 @@ const view = (state: State) => (actions: Actions) =>
         />
       </p>
       <hr />
-      <button onClick={actions.slide.goLeft}>Go Left</button>
-      <button onClick={actions.slide.goRight}>Go Right</button>
-      <p style={{
-        position: 'relative',
-        width: '100px',
-        height: '100px',
-        overflow: 'hidden',
-      }}>
-        <div
-          style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            top: '0px',
-            left: '0px',
-            background: state.slide.slides[state.slide.currents.prev],
-            ...state.slide[state.slide.direction].prev.style,
-          }}
-          // key={state.slide.slides[state.slide.currents.prev]}
-          className={state.slide[state.slide.direction].prev.className}
-        />
-        <div
-          style={{
-            width: '100px',
-            height: '100px',
-            position: 'absolute',
-            top: '0px',
-            left: '0px',
-            background: state.slide.slides[state.slide.currents.next],
-            ...state.slide[state.slide.direction].next.style,
-          }}
-          // key={state.slide.slides[state.slide.currents.next]}
-          className={state.slide[state.slide.direction].next.className}
-        />
-      </p>
+      {Slide.view(state.slide)(actions.slide)}
     </main>
 
 export default app({

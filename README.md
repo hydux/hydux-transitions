@@ -9,9 +9,11 @@ A transition library followed The Elm Architecture, for Hydux.
 yarn add hydux-transitions # npm i hydux-transitions
 ```
 
+## [Try it online!](https://codepen.io/zaaack/pen/ppwaEG)
+
 ## Usage
 ```js
-
+import Transitions, { Units } from 'hydux-transitions'
 const actions = {
   timeline: Transitions.actions,
 }

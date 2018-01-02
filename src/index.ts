@@ -1,5 +1,5 @@
-import { Cmd } from 'hydux'
-
+import { Cmd, Sub } from 'hydux'
+export { Sub }
 export type ValueOf2d<T> = T | [T, T]
 export type ValueOf3d<T> = ValueOf2d<T> | [T, T, T]
 
@@ -16,7 +16,6 @@ export type CssCubicBezier = string & { _tag: 'CssCubicBezier' }
 export type StartTime = ({start: number} | {offset: number}) & { _tag: 'HyduxTransitionOffset' }
 export type CssMatrix = string & { _tag: 'CssMatrix' }
 export type CssMatrix3d = string & { _tag: 'CssMatrix3d' }
-const cssPrefix = document.body.style.webkitTransform ? '-webkit-' : ''
 
 export const Units = {
   deg: (n: number) => n + 'deg' as CssAngle,
@@ -194,22 +193,18 @@ export const actions = {
     animState: AnimState.end,
   }),
   start: (onEnd?: Function) => (state: State) => (actions: Actions) => {
-    if (state.animState !== AnimState.ready) {
-      return [state, Cmd.ofSub<Actions>(actions => {
-        actions.reset()
-        actions.start(onEnd)
-      })]
-    }
-    // const nextState: State = {
-    //   ...state,
-    //   style: {},
-    //   className: '',
-    //   timers: [],
-    //   animState: AnimState.running,
+    // if (state.animState !== AnimState.ready) {
+    //   return [state, Cmd.ofSub<Actions>(actions => {
+    //     actions.reset()
+    //     actions.start(onEnd)
+    //   })]
     // }
-    return [state, Cmd.ofSub<Actions>(actions => {
-      runFrames(state.frames, state, actions, onEnd)
-    })]
+    return [
+      init.apply(null, state._initArgs),
+      Cmd.ofSub<Actions>(actions => {
+        runFrames(state.frames, state, actions, onEnd)
+      }),
+    ]
   },
   run: (frames: Frame[]) => (state: State) => (actions: Actions) => {
     const nextState: State = {
