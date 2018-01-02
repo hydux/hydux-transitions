@@ -58,7 +58,6 @@
   },
   "dependencies": {
     "hydux": "^0.1.10",
-    "quick-lru": "^1.1.0",
     "tslib": "^1.8.1"
   },
   "optionalDependencies": {}

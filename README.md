@@ -6,10 +6,13 @@ A transition library followed The Elm Architecture, for [Hydux](https://github.c
 
 ## Install
 ```sh
-yarn add hydux-transitions # npm i hydux-transitions
+yarn add hydux-transitions hydux # npm i hydux-transitions hydux
 ```
 
-## [Try it online!](https://codepen.io/zaaack/pen/ppwaEG)
+## Online Examples
+
+* [Timeline](https://codepen.io/zaaack/pen/ppwaEG)
+* [Slides](https://codepen.io/zaaack/pen/QagQee?editors=1010)
 
 ## Usage
 ```js
