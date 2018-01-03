@@ -42,7 +42,7 @@ const state = {
   slide: Slide.init(),
 }
 
-const view = (state) => (actions) => {
+const view = (state, actions) => {
   return (
     <main>
       <button onClick={actions.timeline.start}>Start</button>
