@@ -49,7 +49,7 @@ export const actions = {
     prev: Transitions.actions,
     next: Transitions.actions,
   },
-  goLeft: () => (state: State) => (actions: Actions) => {
+  goLeft: () => (state: State, actions: Actions) => {
     let next = state.index + 1
     if (next === state.slides.length) {
       next = 0
@@ -64,7 +64,7 @@ export const actions = {
       actions.left.next.start()
     })]
   },
-  goRight: () => (state: State) => (actions: Actions) => {
+  goRight: () => (state: State, actions: Actions) => {
     let next = state.index - 1
     if (next === -1) {
       next = state.slides.length - 1
@@ -82,7 +82,7 @@ export const actions = {
 }
 export const init = () => state
 
-export const view = (state: State) => (actions: Actions) => {
+export const view = (state: State, actions: Actions) => {
   return (
     <div>
       <button onClick={actions.goLeft}>Go Left</button>

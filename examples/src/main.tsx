@@ -70,7 +70,7 @@ const view = (state: State) => (actions: Actions) =>
         />
       </p>
       <hr />
-      {Slide.view(state.slide)(actions.slide)}
+      {Slide.view(state.slide, actions.slide)}
     </main>
 
 export default app({

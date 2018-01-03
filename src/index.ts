@@ -167,7 +167,7 @@ function runFrames(frames: Frame[], state: State, actions: Actions, onEnd?: Func
   // state.timers.push(startTimer as any)
 }
 export const actions = {
-  _startFrame: (frame: Frame) => (state: State) => (actions: Actions) => {
+  _startFrame: (frame: Frame) => (state: State) => {
     const nextState: State = {
       ...state,
       style: frameToStyle(frame),
@@ -180,7 +180,7 @@ export const actions = {
         : Cmd.none
     ]
   },
-  _endFrame: (frame: Frame) => (state: State) => (actions: Actions) => {
+  _endFrame: (frame: Frame) => (state: State) => {
     return [
       state as State,
       frame.onEnd
@@ -192,13 +192,7 @@ export const actions = {
     ...state,
     animState: AnimState.end,
   }),
-  start: (onEnd?: Function) => (state: State) => (actions: Actions) => {
-    // if (state.animState !== AnimState.ready) {
-    //   return [state, Cmd.ofSub<Actions>(actions => {
-    //     actions.reset()
-    //     actions.start(onEnd)
-    //   })]
-    // }
+  start: (onEnd?: Function) => (state: State) => {
     return [
       init.apply(null, state._initArgs),
       Cmd.ofSub<Actions>(actions => {
@@ -206,7 +200,7 @@ export const actions = {
       }),
     ]
   },
-  run: (frames: Frame[]) => (state: State) => (actions: Actions) => {
+  run: (frames: Frame[]) => (state: State) => {
     const nextState: State = {
       ...state,
       frames,
@@ -221,7 +215,7 @@ export const actions = {
       Cmd.ofFn(() => state.timers.forEach(timer => clearTimeout(timer as any)), void 0),
     ]
   },
-  end: () => (state: State) => (actions: Actions) => {
+  end: () => (state: State) => {
     if (state.frames.length === 0) return
     const lastFrame = state.frames[state.frames.length - 1]
     return [
