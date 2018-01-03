@@ -100,8 +100,8 @@ export interface Frame extends Transform {
     onEnd?: (frame: Frame) => any;
 }
 export declare const actions: {
-    _startFrame: (frame: Frame) => (state: State) => (actions: any) => (Sub<any>[] | State)[];
-    _endFrame: (frame: Frame) => (state: State) => (actions: any) => (State | Sub<{}>[])[];
+    _startFrame: (frame: Frame) => (state: State) => (Sub<any>[] | State)[];
+    _endFrame: (frame: Frame) => (state: State) => (State | Sub<{}>[])[];
     _end: () => (state: State) => {
         animState: AnimState;
         style: object;
@@ -110,12 +110,12 @@ export declare const actions: {
         frames: Frame[];
         _initArgs: any[];
     };
-    start: (onEnd?: Function | undefined) => (state: State) => (actions: any) => any[];
-    run: (frames: Frame[]) => (state: State) => (actions: any) => (State | Sub<any>[])[];
+    start: (onEnd?: Function | undefined) => (state: State) => any[];
+    run: (frames: Frame[]) => (state: State) => (State | Sub<any>[])[];
     reset: () => (state: State) => any[];
-    end: () => (state: State) => (actions: any) => (Sub<{}>[] | {
+    end: () => (state: State) => (Sub<{}>[] | {
         animState: AnimState;
-        style: {};
+        style: object;
         timers: never[];
         className: string;
         frames: Frame[];
@@ -147,8 +147,8 @@ export declare const init: (frames?: Frame[], options?: InitOptions) => State;
 declare const _default: {
     init: (frames?: Frame[], options?: InitOptions) => State;
     actions: {
-        _startFrame: (frame: Frame) => (state: State) => (actions: any) => (Sub<any>[] | State)[];
-        _endFrame: (frame: Frame) => (state: State) => (actions: any) => (State | Sub<{}>[])[];
+        _startFrame: (frame: Frame) => (state: State) => (Sub<any>[] | State)[];
+        _endFrame: (frame: Frame) => (state: State) => (State | Sub<{}>[])[];
         _end: () => (state: State) => {
             animState: AnimState;
             style: object;
@@ -157,12 +157,12 @@ declare const _default: {
             frames: Frame[];
             _initArgs: any[];
         };
-        start: (onEnd?: Function | undefined) => (state: State) => (actions: any) => any[];
-        run: (frames: Frame[]) => (state: State) => (actions: any) => (State | Sub<any>[])[];
+        start: (onEnd?: Function | undefined) => (state: State) => any[];
+        run: (frames: Frame[]) => (state: State) => (State | Sub<any>[])[];
         reset: () => (state: State) => any[];
-        end: () => (state: State) => (actions: any) => (Sub<{}>[] | {
+        end: () => (state: State) => (Sub<{}>[] | {
             animState: AnimState;
-            style: {};
+            style: object;
             timers: never[];
             className: string;
             frames: Frame[];
