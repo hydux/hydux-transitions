@@ -144,6 +144,7 @@ function frameToStyle(frame: Frame) {
 function isFn(fn: any): fn is Function {
   return typeof fn === 'function'
 }
+
 function runFrames(frames: Frame[], state: State, actions: Actions, onEnd?: Function, i: number = 0) {
   if (i >= frames.length) {
     actions._end()
@@ -151,18 +152,18 @@ function runFrames(frames: Frame[], state: State, actions: Actions, onEnd?: Func
   }
   const frame = frames[i]
   requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      actions._startFrame(frame)
-      const endTimer = setTimeout(
-        () => {
+    actions._startFrame(frame)
+    const endTimer = setTimeout(
+      () => {
+        requestAnimationFrame(() => {
           actions._endFrame(frame)
-          runFrames(frames, state, actions, onEnd, ++i)
-        },
-        frame.duration || 1,
-      )
+        })
+        runFrames(frames, state, actions, onEnd, ++i)
+      },
+      frame.duration || 1,
+    )
       // is it worth to use anti-pattern to reduce vdom render ?
-      state.timers.push(endTimer as any)
-    })
+    state.timers.push(endTimer as any)
   })
   // state.timers.push(startTimer as any)
 }
@@ -196,7 +197,8 @@ export const actions = {
     return [
       init.apply(null, state._initArgs),
       Cmd.ofSub<Actions>(actions => {
-        runFrames(state.frames, state, actions, onEnd)
+        requestAnimationFrame(() =>
+          runFrames(state.frames, state, actions, onEnd))
       }),
     ]
   },
