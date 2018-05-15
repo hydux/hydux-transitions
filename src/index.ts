@@ -163,7 +163,7 @@ function runFrames(frames: Frame[], state: State, actions: Actions, onEnd?: Func
       frame.duration || 1,
     )
       // is it worth to use anti-pattern to reduce vdom render ?
-    state.timers.push(endTimer as any)
+    state.timers.push(endTimer)
   })
   // state.timers.push(startTimer as any)
 }
@@ -207,7 +207,7 @@ export const actions = {
       ...state,
       frames,
     }
-    return [state, Cmd.ofSub<Actions>(actions => {
+    return [nextState, Cmd.ofSub<Actions>(actions => {
       actions.start()
     })]
   },
@@ -229,17 +229,6 @@ export const actions = {
       Cmd.ofFn(() => state.timers.forEach(timer => (clearTimeout(timer as any))), void 0),
     ]
   }
-}
-export type People = {
-  name: string
-  age: number
-}
-function isPeople(obj: any): obj is People {
-  let obj2 = obj
-  if (typeof obj2.name === 'function' && typeof obj2.age === 'number') {
-    return true
-  }
-  return false
 }
 
 export type Actions = typeof actions
