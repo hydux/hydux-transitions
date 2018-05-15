@@ -99,19 +99,9 @@ export interface Frame extends Transform {
     onStart?: (frame: Frame) => any;
     onEnd?: (frame: Frame) => any;
 }
-export declare const actions: {
-    _startFrame: (frame: Frame) => (state: State) => (Sub<any>[] | State)[];
-    _endFrame: (frame: Frame) => (state: State) => (State | Sub<{}>[])[];
-    _end: () => (state: State) => {
-        animState: AnimState;
-        style: object;
-        className: string;
-        timers: (number | NodeJS.Timer)[];
-        frames: Frame[];
-        _initArgs: any[];
-    };
+export declare class Actions {
     start: (onEnd?: Function | undefined) => (state: State) => any[];
-    run: (frames: Frame[]) => (state: State) => (State | Sub<any>[])[];
+    run: (frames: Frame[]) => (state: State) => (State | Sub<Actions>[])[];
     reset: () => (state: State) => any[];
     end: () => (state: State) => (Sub<{}>[] | {
         animState: AnimState;
@@ -121,12 +111,8 @@ export declare const actions: {
         frames: Frame[];
         _initArgs: any[];
     })[] | undefined;
-};
-export declare type People = {
-    name: string;
-    age: number;
-};
-export declare type Actions = typeof actions;
+}
+export declare const actions: Actions;
 export declare enum AnimState {
     running = 1,
     end = 2,
@@ -146,29 +132,7 @@ export declare type InitOptions = {
 export declare const init: (frames?: Frame[], options?: InitOptions) => State;
 declare const _default: {
     init: (frames?: Frame[], options?: InitOptions) => State;
-    actions: {
-        _startFrame: (frame: Frame) => (state: State) => (Sub<any>[] | State)[];
-        _endFrame: (frame: Frame) => (state: State) => (State | Sub<{}>[])[];
-        _end: () => (state: State) => {
-            animState: AnimState;
-            style: object;
-            className: string;
-            timers: (number | NodeJS.Timer)[];
-            frames: Frame[];
-            _initArgs: any[];
-        };
-        start: (onEnd?: Function | undefined) => (state: State) => any[];
-        run: (frames: Frame[]) => (state: State) => (State | Sub<any>[])[];
-        reset: () => (state: State) => any[];
-        end: () => (state: State) => (Sub<{}>[] | {
-            animState: AnimState;
-            style: object;
-            timers: never[];
-            className: string;
-            frames: Frame[];
-            _initArgs: any[];
-        })[] | undefined;
-    };
+    actions: Actions;
     Units: {
         deg: (n: number) => CssAngle;
         grad: (n: number) => CssAngle;

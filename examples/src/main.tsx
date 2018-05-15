@@ -2,7 +2,7 @@ import _app, { ActionsType, Cmd } from 'hydux'
 import withPicodom, { h, React } from 'hydux/lib/enhancers/picodom-render'
 import Transitions, { Units } from '../../src/index'
 import * as Slide from './slide'
-
+let U = Units
 let app = withPicodom<State, Actions>()(_app)
 
 function defaultLogger (prevState, action, nextState) {
@@ -25,26 +25,32 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const actions = {
+  run: Transitions.actions,
   timeline: Transitions.actions,
   slide: Slide.actions
 }
 
 const state = {
+  run: Transitions.init([], {
+    initFrame: {
+      translateX: U.px(50),
+    }
+  }),
   timeline: Transitions.init([{
-    translateX: Units.px(200),
+    translateX: U.px(200),
     scale: 2,
-    duration: Units.ms(1000),
+    duration: U.ms(1000),
   }, {
-    translateX: Units.px(100),
+    translateX: U.px(100),
     scale: 1,
-    duration: Units.ms(2000),
+    duration: U.ms(2000),
   }, {
-    translateX: Units.px(200),
+    translateX: U.px(200),
     scale: 2,
-    duration: Units.ms(3000),
+    duration: U.ms(3000),
   }], {
     initFrame: {
-      translateX: Units.px(100),
+      translateX: U.px(100),
     }
   }),
   slide: Slide.init(),
@@ -55,6 +61,27 @@ type State = typeof state
 const pStyle = { margin: '20px' }
 const view = (state: State) => (actions: Actions) =>
     <main>
+    <button onClick={_ => actions.run.run([{
+      translateX: U.px(100),
+      scale: 1,
+      duration: U.ms(500),
+    }, {
+      translateX: U.px(200),
+      scale: 2,
+      duration: U.ms(500),
+    }])}>Run</button>
+    <p style={pStyle}>
+      <div
+        style={{
+          width: '20px',
+          height: '20px',
+          background: 'red',
+          ...state.run.style,
+        }}
+        className={state.run.className}
+      />
+    </p>
+    <hr />
       <button onClick={actions.timeline.start}>Start</button>
       <button onClick={actions.timeline.reset}>Reset</button>
       <button onClick={actions.timeline.end}>End</button>

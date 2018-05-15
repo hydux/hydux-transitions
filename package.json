@@ -6,7 +6,7 @@
   "typings": "./lib/index",
   "types": "./lib/index",
   "scripts": {
-    "build": "del lib && tsc -d -t es5 && cp ./index.js.flow ./lib",
+    "build": "del lib && tsc -d -t es5",
     "build:dist": "webpack -p --progress --profile",
     "test": "mocha --require espower-typescript/guess \"src/test/**/*.ts\" \"lib/test/**/*.js\"",
     "test:watch": "npm run test -- -w --watch-extensions ts,tsx",
@@ -57,7 +57,7 @@
     "webpack": "^3.10.0"
   },
   "dependencies": {
-    "hydux": "^0.4.0",
+    "hydux": "^0.4.6",
     "tslib": "^1.8.1"
   },
   "optionalDependencies": {}
