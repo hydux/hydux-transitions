@@ -67,8 +67,11 @@ const view = (state: State) => (actions: Actions) =>
       duration: U.ms(500),
     }, {
       translateX: U.px(200),
-      scale: 2,
       duration: U.ms(500),
+    }, {
+      scale: 2,
+      duration: U.ms(300),
+      startAt: U.offset(-300),
     }])}>Run</button>
     <p style={pStyle}>
       <div

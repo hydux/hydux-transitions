@@ -13,7 +13,8 @@ export type CssLenWithUnit = CssPx | CssRem | CssEm | CssPt
 export type CssPercent = string & { _tag: 'CssPercent' }
 export type CssLength = number | CssLenWithUnit | CssPercent
 export type CssCubicBezier = string & { _tag: 'CssCubicBezier' }
-export type StartTime = ({ start: number } | { offset: number }) & {
+export type StartAtStart = { start: number }
+export type StartTime = (StartAtStart | { offset: number }) & {
   _tag: 'HyduxTransitionOffset'
 }
 export type CssMatrix = string & { _tag: 'CssMatrix' }
@@ -80,18 +81,19 @@ export interface Transform {
 export interface Frame extends Transform {
   transformOrigin?: string
   transformStyle?: string
+  startAt?: StartTime,
   style?: object
   delay?: CssMs
   duration?: CssMs
   property?: 'all' | 'transition' | 'opacity'
   easing?:
-    | 'ease'
-    | 'ease-in'
-    | 'ease-out'
-    | 'ease-in-out'
-    | 'step-start'
-    | 'step-end'
-    | CssCubicBezier
+  | 'ease'
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | 'step-start'
+  | 'step-end'
+  | CssCubicBezier
   className?: string
   attrs?: { [key: string]: string }
   opacity?: number
@@ -166,29 +168,61 @@ function isFn(fn: any): fn is Function {
   return typeof fn === 'function'
 }
 
-function runFrames(
+async function runFrames(
   frames: Frame[],
   state: State,
   actions: Actions,
   onEnd?: Function,
-  i: number = 0,
 ) {
-  if (i >= frames.length) {
-    actions.end()
-    return isFn(onEnd) && onEnd(frames)
+  let startAt = 0
+  for (let i = 0; i < frames.length; i++) {
+    const frame = frames[i]
+    if (!frame.startAt) {
+      frame.startAt = Units.start(startAt)
+    } else if ('offset' in frame.startAt) {
+      frame.startAt = Units.start(startAt + frame.startAt.offset)
+    }
+    startAt += frame.duration || 0
   }
-  const frame = frames[i]
-  requestAnimationFrame(() => {
-    actions.$startFrame(frame)
-    const endTimer = setTimeout(() => {
-      requestAnimationFrame(() => {
-        actions.$endFrame(frame)
+
+  await Promise.all(
+    frames.map(
+      frame => new Promise(resolve => {
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            actions.$startFrame(frame)
+            const endTimer = setTimeout(() => {
+              requestAnimationFrame(() => {
+                actions.$endFrame(frame)
+                resolve()
+              })
+            }, frame.duration || 1)
+            // is it worth to use anti-pattern to reduce vdom render ?
+            state.timers.push(endTimer)
+          })
+        }, (frame.startAt! as StartAtStart).start)
       })
-      runFrames(frames, state, actions, onEnd, ++i)
-    }, frame.duration || 1)
-    // is it worth to use anti-pattern to reduce vdom render ?
-    state.timers.push(endTimer)
-  })
+    )
+  )
+  actions.end()
+  isFn(onEnd) && onEnd(frames)
+
+  // if (i >= frames.length) {
+  //   actions.end()
+  //   return isFn(onEnd) && onEnd(frames)
+  // }
+  // const frame = frames[i]
+  // requestAnimationFrame(() => {
+  //   actions.$startFrame(frame)
+  //   const endTimer = setTimeout(() => {
+  //     requestAnimationFrame(() => {
+  //       actions.$endFrame(frame)
+  //     })
+  //     runFrames(frames, state, actions, onEnd, ++i)
+  //   }, frame.duration || 1)
+  //   // is it worth to use anti-pattern to reduce vdom render ?
+  //   state.timers.push(endTimer)
+  // })
   // state.timers.push(startTimer as any)
 }
 export class Actions {
