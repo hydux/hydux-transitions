@@ -59,7 +59,7 @@ const state = {
 type Actions = typeof actions
 type State = typeof state
 const pStyle = { margin: '20px' }
-const view = (state: State) => (actions: Actions) =>
+const view = (state: State, actions: Actions) =>
     <main>
     <button onClick={_ => actions.run.run([{
       translateX: U.px(100),
